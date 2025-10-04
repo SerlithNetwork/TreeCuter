@@ -74,7 +74,7 @@ public class EffectService {
         int effectLevel = Settings.getDefaultEffectLevel() - 1;
         boolean hideMiningEffect = !Settings.isHideMiningEffect();
 
-        var potionEffect = new PotionEffect(PotionEffectType.SLOW_DIGGING, 14, effectLevel, false,
+        var potionEffect = new PotionEffect(PotionEffectType.MINING_FATIGUE, 14, effectLevel, false,
                 hideMiningEffect, hideMiningEffect);
         p.addPotionEffect(potionEffect);
     }
@@ -95,7 +95,7 @@ public class EffectService {
 
     public static void removeEffect(Player p){
         effectPlayersMap.remove(p.getUniqueId());
-        p.removePotionEffect(PotionEffectType.SLOW_DIGGING);
+        p.removePotionEffect(PotionEffectType.MINING_FATIGUE);
     }
 
     public static void applyEffect(Player p){

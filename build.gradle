@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'com.gradleup.shadow' version '8.3.0'
 }
 
 group = 'pl.norbit'
@@ -27,11 +27,11 @@ repositories {
 }
 
 dependencies {
-    compileOnly "io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT"
+    compileOnly "io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT"
     //bstats
     implementation 'org.bstats:bstats-bukkit:3.1.0'
     //glowing
-    implementation 'fr.skytasul:glowingentities:1.4.3'
+    implementation 'fr.skytasul:glowingentities:1.4.8'
     //worldguard
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.8'
     //itemsadder
@@ -39,23 +39,22 @@ dependencies {
 
     compileOnly 'me.clip:placeholderapi:2.11.6'
     //lombok
-    compileOnly 'org.projectlombok:lombok:1.18.26'
-    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+    compileOnly 'org.projectlombok:lombok:1.18.32'
+    annotationProcessor 'org.projectlombok:lombok:1.18.32'
+    //configapi
+    implementation 'net.serlith.ConfigAPI:ConfigAPI-core:1.2.5'
 }
 
 compileJava {options.encoding = "UTF-8"}
 
-def targetJavaVersion = 17
+def targetJavaVersion = 21
 
 shadowJar {
-    relocate 'org.bstats', 'pl.norbit.treecuter'
+    relocate 'org.bstats', 'pl.norbit.treecuter.lib.bstats'
+    relocate 'fr.skytasul', 'pl.norbit.treecuter.lib.skytasul'
+    relocate 'net.j4c0b3y.api.config', 'pl.norbit.treecuter.lib.config'
+    relocate 'dev.dejvokep.boostedyaml', 'pl.norbit.treecuter.lib.boostedyaml'
     archiveClassifier.set("")
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
 }
 
 java {
@@ -68,7 +67,7 @@ java {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+    if (targetJavaVersion >= 17 || JavaVersion.current().isJava10Compatible()) {
         options.release = targetJavaVersion
     }
 }
@@ -78,6 +77,9 @@ processResources {
     inputs.properties props
     filteringCharset 'UTF-8'
     filesMatching('plugin.yml') {
+        expand props
+    }
+    filesMatching('paper-plugin.yml') {
         expand props
     }
 }
