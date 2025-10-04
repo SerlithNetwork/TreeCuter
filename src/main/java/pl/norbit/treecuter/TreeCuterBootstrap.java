@@ -2,12 +2,14 @@ package pl.norbit.treecuter;
 
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.event.RegistryEvents;
 import io.papermc.paper.registry.keys.EnchantmentKeys;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.jetbrains.annotations.NotNull;
+import pl.norbit.treecuter.commands.brigadier.TreeCuterCommand;
 import pl.norbit.treecuter.config.SettingsExtra;
 import pl.norbit.treecuter.utils.KeyUtils;
 
@@ -30,6 +32,9 @@ public class TreeCuterBootstrap implements PluginBootstrap {
                             .activeSlots(EquipmentSlotGroup.ANY)
             );
         }));
+        context.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event -> {
+            event.registrar().register(TreeCuterCommand.build(), "Main command for TreeCuter");
+        });
     }
 
 }
