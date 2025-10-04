@@ -31,7 +31,7 @@ public class SettingsExtra extends StaticConfig {
 
     public static class ENCHANTMENT {
 
-        public static String DESCRIPTION = "";
+        public static String DESCRIPTION = "Lumberjack";
         @Ignore
         public static Component _DESCRIPTION;
 
