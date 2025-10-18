@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'pl.norbit'
-version = 'v1.9.2'
+version = 'v2.0.0'
 
 repositories {
     mavenCentral()
@@ -28,6 +28,7 @@ repositories {
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT"
+    compileOnly files('libs/CoreProtect-CE-23.0.jar')
     //bstats
     implementation 'org.bstats:bstats-bukkit:3.1.0'
     //glowing
