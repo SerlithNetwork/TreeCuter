@@ -46,13 +46,13 @@ public class BlockInteractListener implements Listener {
             return;
         }
 
-        if (Settings.isWorldGuardEnabled() && (!WorldGuardUtils.canBreak(b.getLocation(), p))){
-            return;
-        }
-
         String worldName = p.getWorld().getName();
 
         if(Settings.isBlockedWorld(worldName)){
+            return;
+        }
+
+        if(Settings.isShiftMining() && (!p.isSneaking())){
             return;
         }
 
@@ -68,7 +68,7 @@ public class BlockInteractListener implements Listener {
             return;
         }
 
-        if(Settings.isShiftMining() && (!p.isSneaking())){
+        if (Settings.isWorldGuardEnabled() && (!WorldGuardUtils.canBreak(b.getLocation(), p))){
             return;
         }
 
