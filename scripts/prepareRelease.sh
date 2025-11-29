@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-CURRENT_TAG="1.9.2"
+CURRENT_TAG="2.0"
 RELEASE_NOTES="RELEASE.md"
 
 # Branch name
@@ -42,7 +42,7 @@ echo "" >> $RELEASE_NOTES
 } >> $RELEASE_NOTES
 
 # Get checksums
-file="./build/libs/TreeCuter-v1.9.2.jar"
+file="./build/libs/TreeCuter-v2.0.3.jar"
 if [ -f $file ]; then
   SHA256=$(sha256sum $file | awk '{ print $1 }')
   SHA512=$(sha512sum $file | awk '{ print $1 }')

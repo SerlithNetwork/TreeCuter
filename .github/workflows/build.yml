@@ -44,16 +44,16 @@ jobs:
       - name: Upload TreeCuter
         uses: actions/upload-artifact@main
         with:
-          name: TreeCuter 1.9.2
-          path: ./build/libs/TreeCuter-v1.9.2.jar
+          name: TreeCuter
+          path: ./build/libs/TreeCuter-v2.0.3.jar
 
       - name: Release TreeCuter
         uses: softprops/action-gh-release@master
         with:
           name: "🌳 TreeCuter build ${{ env.BUILD_NUMBER }}"
-          tag_name: "1.9.2"
+          tag_name: "2.0"
           files: |
-            ./build/libs/TreeCuter-v1.9.2.jar
+            ./build/libs/TreeCuter-v2.0.3.jar
           body_path: "./RELEASE.md"
           token: "${{ secrets.GITHUB_TOKEN }}"
           target_commitish: "${{ github.sha }}"
