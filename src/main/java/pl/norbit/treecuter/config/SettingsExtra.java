@@ -65,6 +65,17 @@ public class SettingsExtra extends StaticConfig {
 
         }
 
+        public static class LOOT_POOLS {
+
+            public static boolean TREASURE = false;
+            public static boolean NON_TREASURE = false;
+            public static boolean TRADEABLE = false;
+            public static boolean ENCHANTING_TABLE = false;
+            public static boolean RANDOM_LOOT = false;
+            public static boolean MOB_EQUIPMENT = false;
+
+        }
+
     }
 
     @Override
