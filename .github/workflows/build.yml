@@ -45,7 +45,7 @@ jobs:
         uses: actions/upload-artifact@main
         with:
           name: TreeCuter
-          path: ./build/libs/TreeCuter-v2.0.3.jar
+          path: ./build/libs/TreeCuter-v2.0.4.jar
 
       - name: Release TreeCuter
         uses: softprops/action-gh-release@master
@@ -53,7 +53,7 @@ jobs:
           name: "🌳 TreeCuter build ${{ env.BUILD_NUMBER }}"
           tag_name: "2.0"
           files: |
-            ./build/libs/TreeCuter-v2.0.3.jar
+            ./build/libs/TreeCuter-v2.0.4.jar
           body_path: "./RELEASE.md"
           token: "${{ secrets.GITHUB_TOKEN }}"
           target_commitish: "${{ github.sha }}"
