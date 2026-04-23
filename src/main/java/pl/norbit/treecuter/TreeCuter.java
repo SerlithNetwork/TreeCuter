@@ -7,15 +7,13 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.norbit.treecuter.commands.TreeCuterCommand;
 import pl.norbit.treecuter.config.Settings;
-import pl.norbit.treecuter.listeners.BlockBreakListener;
-import pl.norbit.treecuter.listeners.BlockInteractListener;
-import pl.norbit.treecuter.listeners.TreeListeners;
-import pl.norbit.treecuter.listeners.UnglowListener;
+import pl.norbit.treecuter.listeners.*;
 import pl.norbit.treecuter.placeholders.PlaceholderRegistry;
 import pl.norbit.treecuter.service.CoreProtectService;
 import pl.norbit.treecuter.service.EffectService;
 import pl.norbit.treecuter.service.LeafDecayService;
 import pl.norbit.treecuter.service.TreeCutService;
+import pl.norbit.treecuter.treeplant.TreePlantListener;
 import pl.norbit.treecuter.utils.GlowUtils;
 
 public final class TreeCuter extends JavaPlugin {
@@ -62,14 +60,23 @@ public final class TreeCuter extends JavaPlugin {
         pluginManager.registerEvents(new BlockBreakListener(), this);
         pluginManager.registerEvents(new BlockInteractListener(), this);
         pluginManager.registerEvents(new UnglowListener(), this);
+        pluginManager.registerEvents(new TreePlantListener(), this);
+
+        if(Settings.isNexoAdderEnabled()){
+            pluginManager.registerEvents(new NexoBreakListener(), this);
+        }else if(Settings.isItemsAdderEnabled()){
+            pluginManager.registerEvents(new ItemsAdderBreakListener(), this);
+        }
     }
 
     private void checkPlugins(){
         Settings.setWorldGuardEnabled(checkPlugin("WorldGuard"));
         Settings.setItemsAdderEnabled(checkPlugin("ItemsAdder"));
+        Settings.setNexoAdderEnabled(checkPlugin("Nexo"));
         Settings.setPlaceholderApiEnabled(checkPlugin("PlaceholderAPI"));
 
-        if(Settings.isWorldGuardEnabled() || Settings.isItemsAdderEnabled() || Settings.isPlaceholderApiEnabled()){
+        if(Settings.isWorldGuardEnabled() || Settings.isItemsAdderEnabled()
+                || Settings.isPlaceholderApiEnabled() || Settings.isNexoAdderEnabled()){
             getServer().getLogger().info("");
         }
     }

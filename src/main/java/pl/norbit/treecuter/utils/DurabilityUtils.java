@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.bukkit.enchantments.Enchantment;
 import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.config.SettingsExtra;
 
@@ -31,22 +32,26 @@ public class DurabilityUtils {
             return Settings.getMaxBlocks();
         }
 
-//        if(Settings.isItemsAdderEnabled()){
-//            int uses = ItemsAdderUtils.checkRemainUses(item);
-//
-//            if(uses != -1){
-//                return uses;
-//            }
-//        }
-
         if (meta instanceof Damageable damageable) {
-            int maxPossible = item.getType().getMaxDurability() - damageable.getDamage();
-            if (SettingsExtra.GENERAL.USE_ENCHANTMENT){
+            int maxDurability = item.getType().getMaxDurability();
+            int currentDamage = damageable.getDamage();
+            int remainingDurability = maxDurability - currentDamage;
+
+            //Check for durability enchantment
+            int afterUnbreakingDurability = remainingDurability;
+            int unbreakingLevel = item.getEnchantmentLevel(Enchantment.UNBREAKING);
+            if (unbreakingLevel > 0) {
+                afterUnbreakingDurability = remainingDurability * (unbreakingLevel + 1);
+            }
+
+            int afterLumberjackDurability = afterUnbreakingDurability;
+            if (SettingsExtra.GENERAL.USE_ENCHANTMENT) {
                 int level = item.getEnchantmentLevel(ENCHANTMENT_LUMBERJACK) - 1;
                 int maxEnchantment = SettingsExtra.ENCHANTMENT.BEHAVIOUR.BASE_BLOCKS_BREAK + (SettingsExtra.ENCHANTMENT.BEHAVIOUR.EXTRA_BLOCKS_BREAK_PER_LEVEL * level);
-                return Math.min(maxPossible, maxEnchantment);
+                afterLumberjackDurability = Math.min(afterUnbreakingDurability, maxEnchantment);
             }
-            return maxPossible;
+
+            return afterLumberjackDurability;
         }
         return 0;
     }
@@ -58,23 +63,19 @@ public class DurabilityUtils {
             return item;
         }
 
-//        if(Settings.isItemsAdderEnabled()){
-//            ItemStack itemStack = ItemsAdderUtils.updateDurability(item, dmg);
-//
-//            if(itemStack != null){
-//                return item;
-//            }
-//        }
-
         if (meta instanceof Damageable damageable){
             int maxDurability = item.getType().getMaxDurability();
 
-            if(damageable.getDamage() + dmg >= maxDurability){
+            //Check for durability enchantment
+            int unbreakingLevel = item.getEnchantmentLevel(Enchantment.UNBREAKING);
+            int actualDamage = dmg;
+            if (unbreakingLevel > 0) actualDamage = dmg / (unbreakingLevel + 1);
+
+            if(damageable.getDamage() + actualDamage >= maxDurability){
                 return null;
             }
-            damageable.setDamage((damageable.getDamage() + dmg));
+            damageable.setDamage((damageable.getDamage() + actualDamage));
         }
-
         item.setItemMeta(meta);
         return item;
     }

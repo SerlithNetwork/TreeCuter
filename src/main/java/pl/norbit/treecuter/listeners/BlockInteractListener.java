@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
+import org.bukkit.inventory.ItemStack;
 import pl.norbit.treecuter.config.Settings;
 import pl.norbit.treecuter.config.SettingsExtra;
 import pl.norbit.treecuter.config.model.CutShape;
@@ -34,11 +35,7 @@ public class BlockInteractListener implements Listener {
         var action = e.getAction();
         var p = e.getPlayer();
 
-        if(b == null){
-            return;
-        }
-
-        if(action != Action.LEFT_CLICK_BLOCK){
+        if (b == null || action != Action.LEFT_CLICK_BLOCK) {
             return;
         }
 
@@ -46,9 +43,7 @@ public class BlockInteractListener implements Listener {
             return;
         }
 
-        String worldName = p.getWorld().getName();
-
-        if(Settings.isBlockedWorld(worldName)){
+        if (Settings.isBlockedWorld(p.getWorld().getName())) {
             return;
         }
 
@@ -60,7 +55,7 @@ public class BlockInteractListener implements Listener {
             return;
         }
 
-        var item = p.getInventory().getItemInMainHand();
+        ItemStack item = p.getInventory().getItemInMainHand();
 
         CutShape shape = Settings.getCutShape(b, item);
 

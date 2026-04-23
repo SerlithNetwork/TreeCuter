@@ -11,7 +11,9 @@ import pl.norbit.treecuter.TreeCuter;
 import pl.norbit.treecuter.config.model.CustomItem;
 import pl.norbit.treecuter.config.model.CustomTool;
 import pl.norbit.treecuter.config.model.CutShape;
-import pl.norbit.treecuter.service.TreePlanterService;
+import pl.norbit.treecuter.service.EffectService;
+import pl.norbit.treecuter.treeplant.TreePlanterService;
+import pl.norbit.treecuter.utils.item.MaterialMatcherUtils;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -34,6 +36,10 @@ public class Settings {
     @Getter
     @Setter
     private static boolean itemsAdderEnabled;
+
+    @Getter
+    @Setter
+    private static boolean nexoAdderEnabled;
 
     @Getter
     @Setter
@@ -63,9 +69,9 @@ public class Settings {
     @Getter
     private static List<Material> acceptWoodBlocks;
     @Getter
-    private static List<Material> acceptLeavesBlocks;
+    private static List<String> acceptLeavesBlocks;
     @Getter
-    private static List<Material> acceptCustomLeavesBlocks;
+    private static List<String> acceptCustomLeavesBlocks;
     @Getter
     private static List<Material> autoPlantSapling;
 
@@ -95,7 +101,6 @@ public class Settings {
     //messages
     @Getter
     private static String permissionMessage;
-
     @Getter
     private static String toggleMessageOn;
     @Getter
@@ -145,7 +150,7 @@ public class Settings {
 
     public static CutShape getCutShape(Block block, ItemStack tool){
         return woodBlocks.stream()
-                .filter(woodBlock -> woodBlock.isAcceptBlock(block.getType()))
+                .filter(woodBlock -> woodBlock.isAcceptBlock(block))
                 .filter(woodBlock -> woodBlock.isAcceptTool(tool))
                 .findFirst()
                 .orElse(null);
@@ -166,8 +171,13 @@ public class Settings {
         return acceptWoodBlocks.contains(type);
     }
 
-    public static boolean isAcceptedCustomLeavesBlock(Material type){
-        return acceptCustomLeavesBlocks.contains(type);
+    public static boolean isAcceptedCustomLeavesBlock(Block b){
+        for (String blockId : acceptCustomLeavesBlocks) {
+            if(MaterialMatcherUtils.isEqual(b, blockId)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean isAcceptedTool(Material type){
@@ -235,17 +245,21 @@ public class Settings {
                 .filter(Objects::nonNull)
                 .forEach(acceptWoodBlocks::add);
 
-        config.getStringList("accept-leaves-blocks")
-                .stream()
-                .map(Material::getMaterial)
-                .filter(Objects::nonNull)
-                .forEach(acceptLeavesBlocks::add);
+        acceptLeavesBlocks = config.getStringList("accept-leaves-blocks");
 
-        config.getStringList("accept-custom-leaves-blocks")
-                .stream()
-                .map(Material::getMaterial)
-                .filter(Objects::nonNull)
-                .forEach(acceptCustomLeavesBlocks::add);
+//        config.getStringList("accept-leaves-blocks")
+//                .stream()
+//                .map(Material::getMaterial)
+//                .filter(Objects::nonNull)
+//                .forEach(acceptLeavesBlocks::add);
+
+        acceptCustomLeavesBlocks = config.getStringList("accept-custom-leaves-blocks");
+
+//        config.getStringList("accept-custom-leaves-blocks")
+//                .stream()
+//                .map(Material::getMaterial)
+//                .filter(Objects::nonNull)
+//                .forEach(acceptCustomLeavesBlocks::add);
 
         config.getStringList("auto-plant-saplings")
                 .stream()
@@ -304,6 +318,8 @@ public class Settings {
 
         if(autoPlant) TreePlanterService.start();
         else TreePlanterService.stop();
+
+        EffectService.reloadEffect();
     }
 
     public static void loadActionsTypes(ConfigurationSection section) {
@@ -360,12 +376,14 @@ public class Settings {
             cutShape.setCustomTool(customTool);
         }
 
-        List<Material> acceptBlocks = new ArrayList<>();
-        section.getStringList("accept-blocks")
-                .stream()
-                .map(Material::getMaterial)
-                .filter(Objects::nonNull)
-                .forEach(acceptBlocks::add);
+//        List<Material> acceptBlocks = new ArrayList<>();
+//        section.getStringList("accept-blocks")
+//                .stream()
+//                .map(Material::getMaterial)
+//                .filter(Objects::nonNull)
+//                .forEach(acceptBlocks::add);
+
+        List<String> acceptBlocks = section.getStringList("accept-blocks");
 
         cutShape.setAcceptBlocks(acceptBlocks);
 

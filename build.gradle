@@ -1,10 +1,10 @@
 plugins {
     id 'java'
-    id 'com.gradleup.shadow' version '9.2.0'
+    id("com.gradleup.shadow") version "9.4.1"
 }
 
 group = 'pl.norbit'
-version = 'v2.0.4'
+version = 'v2.1.0'
 
 repositories {
     mavenCentral()
@@ -24,15 +24,19 @@ repositories {
     maven {
         url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
     }
+    maven {
+        name "nexomcReleases"
+        url "https://repo.nexomc.com/releases"
+    }
 }
 
 dependencies {
-    compileOnly "io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT"
+    compileOnly "io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT"
     compileOnly files('libs/CoreProtect-CE-23.0.jar')
     //bstats
     implementation 'org.bstats:bstats-bukkit:3.1.0'
     //glowing
-    implementation 'fr.skytasul:glowingentities:1.4.8'
+    implementation 'fr.skytasul:glowingentities:1.4.10'
     //worldguard
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.8'
     //itemsadder
@@ -40,8 +44,9 @@ dependencies {
 
     compileOnly 'me.clip:placeholderapi:2.11.6'
     //lombok
-    compileOnly 'org.projectlombok:lombok:1.18.32'
-    annotationProcessor 'org.projectlombok:lombok:1.18.32'
+    compileOnly 'org.projectlombok:lombok:1.18.44'
+    annotationProcessor 'org.projectlombok:lombok:1.18.44'
+	compileOnly "com.nexomc:nexo:1.21.0"
     //configapi
     implementation 'net.serlith.ConfigAPI:ConfigAPI-core:1.2.5'
 }
@@ -51,15 +56,20 @@ compileJava {options.encoding = "UTF-8"}
 def targetJavaVersion = 21
 
 shadowJar {
-    relocate 'org.bstats', 'pl.norbit.treecuter.lib.bstats'
-    relocate 'fr.skytasul', 'pl.norbit.treecuter.lib.skytasul'
+    relocate 'org.bstats', 'pl.norbit.treecuter.libs.bstats'
+    relocate 'fr.skytasul.glowingentities', 'pl.norbit.treecuter.libs.skytasul.glowingentities'
+    exclude "fr/skytasul/reflection/Version*.class"
+    relocate 'fr.skytasul.reflection', 'pl.norbit.treecuter.libs.skytasul.reflection'
     relocate 'net.j4c0b3y.api.config', 'pl.norbit.treecuter.lib.config'
     relocate 'dev.dejvokep.boostedyaml', 'pl.norbit.treecuter.lib.boostedyaml'
     archiveClassifier.set("")
+    mergeServiceFiles()
 }
 
-tasks.build {
-    dependsOn("shadowJar")
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 java {
@@ -77,10 +87,21 @@ tasks.withType(JavaCompile).configureEach {
     }
 }
 
+build {
+    dependsOn shadowJar
+}
+
 processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+    from(sourceSets.main.resources.srcDirs) {
+        include '**/*'
+    }
+
     def props = [version: version]
     inputs.properties props
     filteringCharset 'UTF-8'
+
     filesMatching('plugin.yml') {
         expand props
     }
