@@ -36,7 +36,7 @@ public final class TreeCuter extends JavaPlugin {
         infoMessage();
         checkPlugins();
 
-        registerCommand();
+        // registerCommand();
         registerListeners();
         registerPapi();
 

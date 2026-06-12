@@ -54,6 +54,8 @@ dependencies {
     //lombok
     compileOnly 'org.projectlombok:lombok:1.18.44'
     annotationProcessor 'org.projectlombok:lombok:1.18.44'
+    //configapi
+    implementation 'net.serlith.ConfigAPI:ConfigAPI-core:1.2.5'
 }
 
 compileJava {options.encoding = "UTF-8"}
@@ -65,6 +67,8 @@ shadowJar {
     relocate 'fr.skytasul.glowingentities', 'pl.norbit.treecuter.libs.skytasul.glowingentities'
     exclude "fr/skytasul/reflection/Version*.class"
     relocate 'fr.skytasul.reflection', 'pl.norbit.treecuter.libs.skytasul.reflection'
+    relocate 'net.j4c0b3y.api.config', 'pl.norbit.treecuter.lib.config'
+    relocate 'dev.dejvokep.boostedyaml', 'pl.norbit.treecuter.lib.boostedyaml'
     archiveClassifier.set("")
     mergeServiceFiles()
 }
@@ -85,7 +89,7 @@ java {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+    if (targetJavaVersion >= 17 || JavaVersion.current().isJava10Compatible()) {
         options.release = targetJavaVersion
     }
 }
@@ -106,6 +110,9 @@ processResources {
     filteringCharset 'UTF-8'
 
     filesMatching('plugin.yml') {
+        expand props
+    }
+    filesMatching('paper-plugin.yml') {
         expand props
     }
 }

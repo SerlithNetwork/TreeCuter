@@ -1,0 +1,18 @@
+name: TreeCuter
+version: '${version}'
+main: pl.norbit.treecuter.TreeCuter
+bootstrapper: pl.norbit.treecuter.TreeCuterBootstrap
+api-version: 1.19
+author: Norbit4
+website: 'https://github.com/Norbit4'
+dependencies:
+  server:
+    WorldGuard:
+      load: BEFORE
+      required: false
+    ItemsAdder:
+      load: BEFORE
+      required: false
+    PlaceholderAPI:
+      load: BEFORE
+      required: false
